@@ -1,12 +1,8 @@
 import React from "react";
 
-export class NewBtn extends React.PureComponent {
-  render() {
-    const { onClick } = this.props;
-    return (
+const NewBtn =({ onClick })=> 
       <button className="new-star" onClick={onClick}>
         ⭐
       </button>
-    );
-  }
-}
+
+export default React.memo(NewBtn);

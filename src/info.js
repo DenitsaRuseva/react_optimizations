@@ -1,12 +1,11 @@
 import React from "react";
 
-export class Info extends React.Component {
-  render() {
-    const Stars = Object.values(this.props.Stars);
+const Info = ({Stars}) => {
+    const StarsArray = Object.values(Stars);
 
     const distances = { max: 0, min: 1000 };
-    Stars.forEach((currentStar) => {
-      Stars.forEach((compareStar) => {
+    StarsArray.forEach((currentStar) => {
+      StarsArray.forEach((compareStar) => {
         if (compareStar === currentStar) {
           return;
         }
@@ -24,10 +23,18 @@ export class Info extends React.Component {
 
     return (
       <div className="board">
-        <div>You have {Object.keys(this.props.Stars).length} stars!</div>
+        <div>You have {Object.keys(Stars).length} stars!</div>
         <div>Age of the oldest star: {distances.max}</div>
         <div>Age of the youngest star: {distances.min}</div>
       </div>
     );
-  }
+
 }
+
+
+export default React.memo(Info, (prevProps, nextProps) => {
+  const oldKeys = Object.values(prevProps)
+  const newKeys =Object.values(nextProps)
+
+  return oldKeys.length !== newKeys.length
+})

@@ -4,8 +4,8 @@ import useComponentSize from "@rehooks/component-size";
 import StarData from "./data.json";
 import { v4 as uuidv4 } from 'uuid';
 import { StarComponent } from "./Star";
-import { NewBtn } from "./NewBtn";
-import { Info } from "./info";
+import NewBtn from "./NewBtn";
+import  Info  from "./info";
 import { NewStarModal } from "./components/modal/NewStarModal";
 
 function positionStars(Stars, width, height) {
@@ -31,14 +31,17 @@ function parseData() {
 function addStar(Stars, age) {
   const id = uuidv4();
 
-  Stars[id] = {
-    id,
+  return {
+    ...Stars,
+    [id]: {
+       id,
     age,
     offset: {
       x: 0,
       y: 0,
-    },
-  };
+    }
+  }
+}
 }
 
 function App() {
@@ -60,8 +63,9 @@ function App() {
   }, [height, width]);
 
   function handleDelete(Star) {
-    delete Stars[Star.id];
-    setStars({ ...Stars });
+    const tempStars = {...Stars};
+    delete tempStars[Star.id];
+    setStars(tempStars);
   }
 
   const StarEls = Object.values(Stars).map((Star) => (
