@@ -3,7 +3,7 @@ import "./App.css";
 import useComponentSize from "@rehooks/component-size";
 import StarData from "./data.json";
 import { v4 as uuidv4 } from 'uuid';
-import { StarComponent } from "./Star";
+import  StarComponent from "./Star";
 import NewBtn from "./NewBtn";
 import  Info  from "./info";
 import { NewStarModal } from "./components/modal/NewStarModal";
@@ -90,10 +90,18 @@ function App() {
 
         const { Star, dragOffset } = dragStarInfo;
 
-        Star.position = {
+        let newStar = {};
+        newStar.id = Star.id;
+        newStar.age = Star.age;
+        newStar.offset = Star.offset;
+        newStar.position = {
           top: ev.pageY - dragOffset.y,
           left: ev.pageX - dragOffset.x,
         };
+
+        Stars[newStar.id] = newStar;
+
+        setStars({ ...Stars });
 
         setStars({ ...Stars });
       }}

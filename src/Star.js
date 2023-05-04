@@ -1,8 +1,7 @@
 import React from "react";
 
-export class StarComponent extends React.Component {
-  render() {
-    const { Star, onDragStart, onDragEnd, onDoubleClick } = this.props;
+const StarComponent = (props)=> {
+    const { Star, onDragStart, onDragEnd, onDoubleClick } = props;
 
     return (
       <div
@@ -26,4 +25,15 @@ export class StarComponent extends React.Component {
       </div>
     );
   }
-}
+
+  const comparison = (prevProps, nextProps) => {
+    console.log(prevProps.Star.position.left);
+    console.log(nextProps.Star.position.left)
+    return (
+      prevProps.Star.id === nextProps.Star.id &&
+      prevProps.Star.position.left === nextProps.Star.position.left &&
+      prevProps.Star.position.top === nextProps.Star.position.top
+    );
+  };
+
+export default React.memo(StarComponent,comparison)
