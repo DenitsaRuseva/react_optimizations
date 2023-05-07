@@ -1,40 +1,50 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
+import { randomExpensiveOperation } from "./utils/expensive-operation";
 
-const Info = ({Stars}) => {
-    const StarsArray = Object.values(Stars);
+export const Info = React.memo(
+  function Info(props) {
+    const [exapnded, setExpanded] = useState(false);
+    const Stars = Object.values(props.Stars);
 
-    const distances = { max: 0, min: 1000 };
-    StarsArray.forEach((currentStar) => {
-      StarsArray.forEach((compareStar) => {
-        if (compareStar === currentStar) {
-          return;
-        }
+    const distances = useMemo(() => {
+      const distancesCalc = { max: 0, min: 1000 };
+      Stars.forEach((currentStar) => {
+        randomExpensiveOperation();
+        Stars.forEach((compareStar) => {
+          if (compareStar === currentStar) {
+            return;
+          }
 
-        distances.max = Math.max(
-          distances.max,
-          Math.max(Number(currentStar.age), Number(compareStar.age))
-        );
-        distances.min = Math.min(
-          distances.min,
-          Math.min(Number(currentStar.age), Number(compareStar.age))
-        );
+          distancesCalc.max = Math.max(
+            distancesCalc.max,
+            Math.max(Number(currentStar.age), Number(compareStar.age))
+          );
+          distancesCalc.min = Math.min(
+            distancesCalc.min,
+            Math.min(Number(currentStar.age), Number(compareStar.age))
+          );
+        });
       });
-    });
+      return distancesCalc;
+    }, [Object.keys(Stars).length]);
+
+    const expandHandler = () => setExpanded(!exapnded);
 
     return (
-      <div className="board">
-        <div>You have {Object.keys(Stars).length} stars!</div>
+      <div className={exapnded ? "bar" : "board"}>
+        <div>You have {Object.keys(props.Stars).length} stars!</div>
         <div>Age of the oldest star: {distances.max}</div>
         <div>Age of the youngest star: {distances.min}</div>
+        <span className="expand" onClick={expandHandler}>
+          ◤ ◥
+        </span>
       </div>
     );
-
-}
-
-
-export default React.memo(Info, (prevProps, nextProps) => {
-  const oldKeys = Object.values(prevProps)
-  const newKeys =Object.values(nextProps)
-
-  return oldKeys.length !== newKeys.length
-})
+  },
+  (prevProps, nextProps) => {
+    return (
+      Object.keys(prevProps.Stars).length ===
+      Object.keys(nextProps.Stars).length
+    );
+  }
+);

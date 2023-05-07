@@ -1,12 +1,22 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+  lazy,
+  Suspense,
+} from "react";
 import "./App.css";
 import useComponentSize from "@rehooks/component-size";
 import StarData from "./data.json";
-import { v4 as uuidv4 } from 'uuid';
-import  StarComponent from "./Star";
-import NewBtn from "./NewBtn";
-import  Info  from "./info";
-import { NewStarModal } from "./components/modal/NewStarModal";
+import { v4 as uuidv4 } from "uuid";
+import StarComponent from "./Star";
+import { NewBtn } from "./NewBtn";
+import { Info } from "./info";
+
+const NewStarModal = lazy(() => import("./components/modal/NewStarModal"));
+
+const ModalLoader = () => <div className="modal-loader">Loading...</div>;
 
 function positionStars(Stars, width, height) {
   Object.values(Stars).forEach(
@@ -34,14 +44,14 @@ function addStar(Stars, age) {
   return {
     ...Stars,
     [id]: {
-       id,
-    age,
-    offset: {
-      x: 0,
-      y: 0,
-    }
-  }
-}
+      id,
+      age,
+      offset: {
+        x: 0,
+        y: 0,
+      },
+    },
+  };
 }
 
 function App() {
@@ -52,6 +62,7 @@ function App() {
   const boardSize = useComponentSize(boardRef);
   const { height, width } = boardSize;
 
+  //use useCallback hook to memoize a function
   const showDialog = useCallback(() => setIsAddOpen(true), []);
 
   useEffect(() => {
@@ -63,7 +74,7 @@ function App() {
   }, [height, width]);
 
   function handleDelete(Star) {
-    const tempStars = {...Stars};
+    const tempStars = { ...Stars };
     delete tempStars[Star.id];
     setStars(tempStars);
   }
@@ -102,23 +113,24 @@ function App() {
         Stars[newStar.id] = newStar;
 
         setStars({ ...Stars });
-
-        setStars({ ...Stars });
       }}
     >
       {StarEls}
       <Info Stars={Stars} />
+      {/* change the onClick prop to a memoized prop */}
       <NewBtn onClick={showDialog} />
       {isAddOpen && (
-        <NewStarModal
-          isOpen={isAddOpen}
-          onClose={() => setIsAddOpen(false)}
-          onAdd={(StarText) => {
-            addStar(Stars, StarText);
-            positionStars(Stars, width, height);
-            setStars(Stars);
-          }}
-        />
+        <Suspense fallback={<ModalLoader/>}>
+          <NewStarModal
+            isOpen={isAddOpen}
+            onClose={() => setIsAddOpen(false)}
+            onAdd={(StarText) => {
+              addStar(Stars, StarText);
+              positionStars(Stars, width, height);
+              setStars(Stars);
+            }}
+          />
+        </Suspense>
       )}
     </div>
   );

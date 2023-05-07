@@ -20,6 +20,24 @@
   width: 30vw;
 }
 
+.bar {
+  position: absolute;
+  bottom: 0%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  border-radius: 50vw 50vw 0 0;
+  background-color: bisque;
+  width: 100%;
+}
+
+.expand{
+  position: relative;
+  display: inline-block;
+  cursor: pointer;  
+  font-weight: 800;
+  font-size: larger;
+}
+
 .new-star {
   position: absolute;
   top: 0;
@@ -43,4 +61,12 @@
   cursor: move;
   user-select: "none";
   border-radius: 50vw;
+}
+
+
+.modal-loader{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(70, 70, 70, 0.511);
 }
